@@ -1,15 +1,5 @@
-package com.hnue.dto;
-
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
-import java.util.List;
-
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
+package com.hnue.dto; 
 public class Suggestion {
-    public String evaluation;
-    public List<StudyPlan> study_plan;
+    public String overall;
+    public Subjects subjects;
 }

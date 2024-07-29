@@ -1,9 +1,10 @@
 package com.hnue.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hnue.dto.Answers;
+import com.hnue.dto.Career;
 import com.hnue.dto.MBTICareersDescription;
+import com.hnue.dto.Suggestion;
 import com.hnue.entity.*;
 import com.hnue.service.AnswerService;
 import com.hnue.service.HollandServices;
@@ -52,6 +53,11 @@ public class QuestionController {
             MBTICareersByMBTI.add(new MBTICareersDescription(x.getId(), x.getTitle(), x.getDescription()));
         });
         return MBTICareersByMBTI;
+    }
+
+    @PostMapping("/api/tuvan")
+    public Suggestion getDetailSuggestion(@RequestBody Career career) throws JsonProcessingException {
+        return answerService.getSuggestionBaseOnCareerAndScore(career);
     }
 
 }

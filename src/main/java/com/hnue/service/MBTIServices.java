@@ -44,19 +44,19 @@ public class MBTIServices {
             mbtiResults.add(new MBTIResult("E_I", I, "I"));
         }
         if (S >= N) {
-            mbtiResults.add(new MBTIResult("S_N", E, "S"));
+            mbtiResults.add(new MBTIResult("S_N", S, "S"));
         } else {
-            mbtiResults.add(new MBTIResult("S_N", I, "N"));
+            mbtiResults.add(new MBTIResult("S_N", N, "N"));
         }
         if (T >= F) {
-            mbtiResults.add(new MBTIResult("T_F", E, "T"));
+            mbtiResults.add(new MBTIResult("T_F", T, "T"));
         } else {
             mbtiResults.add(new MBTIResult("T_F", F, "F"));
         }
         if (J >= P) {
-            mbtiResults.add(new MBTIResult("J_P", E, "J"));
+            mbtiResults.add(new MBTIResult("J_P", J, "J"));
         } else {
-            mbtiResults.add(new MBTIResult("J_P", F, "P"));
+            mbtiResults.add(new MBTIResult("J_P", P, "P"));
         }
         return mbtiResults;
     }

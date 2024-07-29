@@ -36,14 +36,21 @@ public class AnswerService {
 
     public String SYSTEM_TASK_LO_TRINH =
             "Bạn là một con API Server và sẽ chỉ đưa ra kết quả dưới dạng JSON. " +
-                    "Người dùng sẽ cung cấp cho bạn một nghề nghiệp và điểm số trung bình của 3 môn Toán Văn Anh: " +
-                    "Hãy đánh giá và đưa ra lộ trình học tập phù hợp cho học sinh cấp 2. " +
+                    "Người dùng sẽ cung cấp cho bạn một nghề nghiệp và điểm số trung bình của 3 môn toán văn anh lần lượt theo thứ tự: " +
+                    "Hãy đưa đánh giá tổng thể về học sinh trước. " +
+                    "Hãy đánh giá cụ thể từng môn và đưa ra lộ trình học tập cụ thể cho từng môn kèm theo link khóa học phù hợp cho học sinh cấp 2. " +
+                    "Hãy trả về dữ liệu có dạng như sau: 'overall' : đánh giá chi tiết, 'subjects' : bao gồm môn math, literature, english. " +
+                    "Mỗi môn sẽ có trường sau: 'score' : điểm của môn đó, 'comment' : nhận xét cụ thể, 'study_path' : lộ trình đầy đủ, 'course_link' : liên kết tới khóa học. " +
                     "Không thêm bất kỳ điều gì ngoài đoạn JSON. ";
 
     @Autowired
     private HollandServices hollandServices;
     @Autowired
     private MBTIServices mbtiServices;
+
+    private static final String KEY = "sk-proj-xhbe5lqd2F5S3Ln7G9G7T3BlbkFJEFdOq2rzhqjqSVtAvuaN";
+    public static OpenAiService openAiService = new OpenAiService(KEY, Duration.ofSeconds(60));
+
 
     public List returnResultFromMCQs(Answers answers) throws JsonProcessingException {
         List<HollandResult> hollandResults = hollandServices.calculateHollandResult(answers.hollandAnswer);
@@ -89,35 +96,15 @@ public class AnswerService {
             DANH_SACH_NGHE += careersResponse.getNgheNghiep() + ",";
             MO_TA_NGHE += careersResponse.getMoTa() + ",";
         }
-        OpenAiService openAiService = new OpenAiService("sk-None-W1unEYzC7Vt5qJnUH78RT3BlbkFJDOaGP9DG1enWXeUshZGp", Duration.ofSeconds(60));
         ChatCompletionRequest chatCompletionRequest = ChatCompletionRequest
                 .builder()
-                .model("gpt-4-turbo-2024-04-09")
+                .model("gpt-3.5-turbo")
                 .temperature(0.5)
                 .messages(
                         List.of(
                                 new ChatMessage("system", SYSTEM_TASK_MESSAGE),
                                 new ChatMessage("user", "Các ngành nghề đó là " + DANH_SACH_NGHE)))
                 .build();
-
-//        ChatCompletionRequest chatCompletionRequest2 = ChatCompletionRequest
-//                .builder()
-//                .model("gpt-4-turbo-2024-04-09")
-//                .temperature(0.5)
-//                .messages(
-//                        List.of(
-//                                new ChatMessage("system", SYSTEM_TASK_LO_TRINH),
-//                                new ChatMessage("user", "Điểm số của tôi là Toán = 1, Văn = 1, Anh = 1, nghề nghiệp mong muốn là: Bác sĩ")))
-//                .build();
-//
-//        StringBuilder builder = new StringBuilder();
-//        openAiService.createChatCompletion(chatCompletionRequest2)
-//                .getChoices().forEach(choice -> {
-//                    builder.append(choice.getMessage().getContent());
-//                });
-//
-//        System.out.println(builder.toString());
-
 
         StringBuilder builder = new StringBuilder();
         openAiService.createChatCompletion(chatCompletionRequest)
@@ -127,6 +114,31 @@ public class AnswerService {
 
         List<List> result = getLists(builder, mbtiResults, hollandResults);
         return result;
+    }
+
+    public Suggestion getSuggestionBaseOnCareerAndScore(Career career) throws JsonProcessingException {
+        String prompt = "Điểm số của tôi là: Toán = " + career.getDToan() + ", Văn = " + career.getDVan() + ", Anh = " + career.getDVan() + ", nghề nghiệp mong muốn là: " + career.getTenNN();
+        ChatCompletionRequest chatCompletionRequest = ChatCompletionRequest
+                .builder()
+                .model("gpt-4-turbo-2024-04-09")
+                .temperature(0.5)
+                .messages(
+                        List.of(
+                                new ChatMessage("system", SYSTEM_TASK_LO_TRINH),
+                                new ChatMessage("user", prompt)))
+                .build();
+
+        StringBuilder builder = new StringBuilder();
+        openAiService.createChatCompletion(chatCompletionRequest)
+                .getChoices().forEach(choice -> {
+                    builder.append(choice.getMessage().getContent());
+                });
+
+        String s = builder.toString().replaceAll("\n\r", " ").replaceAll("\\u0009", " ");
+        ObjectMapper objectMapper = new ObjectMapper();
+        TypeReference<Suggestion> typeReference = new TypeReference<>() {
+        };
+        return objectMapper.readValue(s, typeReference);
     }
 
     public static List<CareersResponse> mappingCareers(StringBuilder builder) throws JsonProcessingException {
