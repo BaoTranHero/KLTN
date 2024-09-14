@@ -21,34 +21,17 @@ import java.util.stream.Collectors;
 public class AnswerService {
 
     public String SYSTEM_TASK_MESSAGE =
-            "Bạn là một con API Server và sẽ chỉ đưa ra kết quả dưới dạng JSON. " +
-                    "Người dùng sẽ cung cấp cho bạn một danh sách nghề nghiệp và mô tả của nó. " +
-                    "Hãy đưa ra một danh sách các ngành học có liên quan tới những nghề nghiệp này. " +
-                    "Đưa kết quả dưới dạng một mảng String. " +
-                    "Đưa ra các trường Đại học ở Việt Nam có đào tạo các ngành nghề ở trên. " +
-                    "Đưa kết quả dưới dạng một mảng String. " +
-                    "Các kĩ năng phải có của nghề đó. " +
-                    "Đưa kết quả dưới dạng một mảng String" +
-                    "Kết quả đưa ra có dạng như sau 'ngheNghiep' : tên nghề nghiệp, 'moTa' : mô tả, 'yeuCau' : danh sách các kĩ năng cần thiết ,'daoTao' : danh sách các trường đào tạo, 'lienQuan' : các ngành học " +
-                    "Mỗi 1 kết quả đưa ra là 1 object và có dấu , trước khi sang object mới. " +
-                    "Kết quả trả về là một mảng các object ở trên. " +
-                    "Không thêm bất kỳ điều gì ngoài đoạn JSON.";
+            "Nothing";
 
     public String SYSTEM_TASK_LO_TRINH =
-            "Bạn là một con API Server và sẽ chỉ đưa ra kết quả dưới dạng JSON. " +
-                    "Người dùng sẽ cung cấp cho bạn một nghề nghiệp và điểm số trung bình của 3 môn toán văn anh lần lượt theo thứ tự: " +
-                    "Hãy đưa đánh giá tổng thể về học sinh trước. " +
-                    "Hãy đánh giá cụ thể từng môn và đưa ra lộ trình học tập cụ thể cho từng môn kèm theo link khóa học phù hợp cho học sinh cấp 2. " +
-                    "Hãy trả về dữ liệu có dạng như sau: 'overall' : đánh giá chi tiết, 'subjects' : bao gồm môn math, literature, english. " +
-                    "Mỗi môn sẽ có trường sau: 'score' : điểm của môn đó, 'comment' : nhận xét cụ thể, 'study_path' : lộ trình đầy đủ, 'course_link' : liên kết tới khóa học. " +
-                    "Không thêm bất kỳ điều gì ngoài đoạn JSON. ";
+            "Nothing";
 
     @Autowired
     private HollandServices hollandServices;
     @Autowired
     private MBTIServices mbtiServices;
 
-    private static final String KEY = "sk-proj-xhbe5lqd2F5S3Ln7G9G7T3BlbkFJEFdOq2rzhqjqSVtAvuaN";
+    private static final String KEY = "NOTHING_TO_SHOW_HERE";
     public static OpenAiService openAiService = new OpenAiService(KEY, Duration.ofSeconds(60));
 
 
